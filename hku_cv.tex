@@ -1,0 +1,346 @@
+%% ============================================================
+%%  HKU CV Template
+%%  The University of Hong Kong — Professional Curriculum Vitae
+%%  Requires: XeLaTeX or LuaLaTeX + fontawesome5, moderncv-like setup
+%%  Engine: compile with XeLaTeX (xelatex hku_cv.tex)
+%% ============================================================
+
+\documentclass[11pt, a4paper]{article}
+
+%% ── Packages ────────────────────────────────────────────────
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2.2cm, right=2.2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{fontspec}          % XeLaTeX font selection
+\usepackage{fontawesome5}      % icons
+\usepackage{titlesec}          % section formatting
+\usepackage{enumitem}          % list control
+\usepackage{hyperref}          % clickable links
+\usepackage{tabularx}          % flexible tables
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{ragged2e}          % RaggedRight
+\usepackage{microtype}         % optical margin alignment
+\usepackage{parskip}           % no paragraph indent, small skip
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{tikz}              % for the colour accent bar
+\usepackage{fancyhdr}
+
+%% ── HKU Brand Colours ───────────────────────────────────────
+%  HKU official green and secondary palette
+\definecolor{hkugreen}{HTML}{007B5E}   % HKU primary green
+\definecolor{hkudark}{HTML}{004D3A}    % darker shade for headings
+\definecolor{hkugray}{HTML}{4A4A4A}    % body text
+\definecolor{hkulight}{HTML}{E8F4F0}   % light background tint
+\definecolor{hkuline}{HTML}{CCDDDA}    % rule colour
+\definecolor{hkulinkblue}{HTML}{005C8A}% hyperlink colour
+
+%% ── Fonts (XeLaTeX, all freely available via TeX Live / MiKTeX) ─────
+%  TeX Gyre Pagella  — elegant Palatino-style serif for body text
+%  TeX Gyre Heros    — clean Helvetica-style sans for headings/labels
+%  TeX Gyre Cursor   — Courier-style mono for code
+%  All ship with a standard TeX Live / MiKTeX installation.
+\setmainfont[
+  BoldFont        = texgyrepagella-bold.otf,
+  ItalicFont      = texgyrepagella-italic.otf,
+  BoldItalicFont  = texgyrepagella-bolditalic.otf
+]{texgyrepagella-regular.otf}
+\setsansfont[
+  BoldFont        = texgyreheros-bold.otf,
+  ItalicFont      = texgyreheros-italic.otf,
+  BoldItalicFont  = texgyreheros-bolditalic.otf
+]{texgyreheros-regular.otf}
+\setmonofont[
+  BoldFont        = texgyrecursor-bold.otf,
+  ItalicFont      = texgyrecursor-italic.otf,
+  BoldItalicFont  = texgyrecursor-bolditalic.otf
+]{texgyrecursor-regular.otf}
+
+%% ── Hyperref setup ──────────────────────────────────────────
+\hypersetup{
+  colorlinks = true,
+  urlcolor   = hkulinkblue,
+  linkcolor  = hkudark,
+  citecolor  = hkudark,
+  pdfauthor  = {Your Name},
+  pdftitle   = {Curriculum Vitae},
+  pdfsubject = {CV},
+}
+
+%% ── Page style ──────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\small\color{hkugray}\thepage}
+\fancyfoot[R]{\small\color{hkugray}\textit{Curriculum Vitae}}
+
+%% ── Typography helpers ──────────────────────────────────────
+\newcommand{\cvname}[1]{%
+  {\fontsize{26}{30}\selectfont\color{hkudark}\textbf{#1}}}
+
+\newcommand{\cvtitle}[1]{%
+  {\fontsize{13}{16}\selectfont\color{hkugreen}\textit{#1}}}
+
+\newcommand{\cvsection}[1]{%
+  \vspace{10pt}%
+  {\color{hkudark}\fontsize{12}{14}\selectfont\textbf{\MakeUppercase{#1}}}%
+  \vspace{2pt}%
+  {\color{hkugreen}\hrule height 1.5pt}%
+  \vspace{6pt}}
+
+\newcommand{\cvsubsection}[1]{%
+  {\color{hkugray}\fontsize{10.5}{13}\selectfont\textbf{#1}}}
+
+%% Entry macro: \cventry{dates}{title}{org}{location}{description}
+\newcommand{\cventry}[5]{%
+  \def\cventryDesc{#5}%
+  \begin{tabularx}{\linewidth}{@{}p{2.5cm} X@{}}
+    {\small\color{hkugray}#1} &
+    \begin{minipage}[t]{\linewidth}
+      {\textbf{#2}} \hfill {\small\color{hkugray}\textit{#4}}\\
+      {\color{hkugreen}#3}%
+      \ifx\cventryDesc\empty\else
+        \vspace{2pt}\\{\small\color{hkugray}#5}%
+      \fi
+    \end{minipage}
+  \end{tabularx}\vspace{4pt}}
+
+%% Publication entry: \pubentry{authors}{title}{venue}{year}{url}
+\newcommand{\pubentry}[5]{%
+  \def\pubentryURL{#5}%
+  \begin{tabularx}{\linewidth}{@{}p{2.5cm} X@{}}
+    {\small\color{hkugray}#4} &
+    {\small #1, ``\textit{#2}'', \textbf{#3}.%
+    \ifx\pubentryURL\empty\else~\href{#5}{\faLink}\fi}
+  \end{tabularx}\vspace{3pt}}
+
+%% Skill row: \skillrow{category}{items}
+\newcommand{\skillrow}[2]{%
+  \noindent\textbf{\small #1:}\quad{\small\color{hkugray}#2}\\[2pt]}
+
+%% ── Award / honour entry ───────────────────────────────────
+\newcommand{\awardentry}[3]{%
+  \begin{tabularx}{\linewidth}{@{}p{2.5cm} X@{}}
+    {\small\color{hkugray}#1} & {\small #2 \hfill \textit{\small\color{hkugray}#3}}
+  \end{tabularx}\vspace{2pt}}
+
+%% ============================================================
+%%  DOCUMENT
+%% ============================================================
+\begin{document}
+\setstretch{1.1}
+\color{hkugray}
+
+%% ── Header block ────────────────────────────────────────────
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[hkugreen] (current page.north west) rectangle
+    ([yshift=-5pt] current page.north east);
+\end{tikzpicture}
+
+\vspace{-4pt}
+\noindent
+\begin{tabularx}{\linewidth}{@{} X r @{}}
+  % Left: name + title
+  \begin{minipage}[c]{0.65\linewidth}
+    \cvname{Your Full Name}\\[4pt]
+    \cvtitle{PhD Candidate / Research Assistant Professor / [Your Title]}\\[6pt]
+    {\small Department of [Your Department]\\
+     Faculty of [Your Faculty]\\
+     The University of Hong Kong, Pokfulam, Hong Kong SAR}
+  \end{minipage}
+  &
+  % Right: contact icons
+  \begin{minipage}[c]{0.33\linewidth}\RaggedLeft
+    {\small
+     \faEnvelope\;\href{mailto:yourname@connect.hku.hk}{yourname@connect.hku.hk}\\[3pt]
+     \faPhone\;+852\,XXXX\,XXXX\\[3pt]
+     \faGlobe\;\href{https://yourwebsite.hku.hk}{yourwebsite.hku.hk}\\[3pt]
+     \faOrcid\;\href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}\\[3pt]
+     \faGithub\;\href{https://github.com/yourgithub}{yourgithub}\\[3pt]
+     \faLinkedin\;\href{https://linkedin.com/in/yourprofile}{yourprofile}
+    }
+  \end{minipage}
+\end{tabularx}
+
+\vspace{6pt}
+\noindent{\color{hkuline}\hrule height 0.8pt}
+\vspace{8pt}
+
+%% ── Research Interests ──────────────────────────────────────
+\cvsection{Research Interests}
+\noindent{\small
+Your primary research interest 1, your primary research interest 2, your primary research interest 3,
+and your primary research interest 4. Write one to two concise sentences summarising your research
+agenda and its broader impact.
+}
+
+%% ── Education ───────────────────────────────────────────────
+\cvsection{Education}
+
+\cventry{2022 -- Present}
+        {Doctor of Philosophy in [Field]}
+        {The University of Hong Kong}
+        {Hong Kong SAR}
+        {Supervisor: Prof.\ Supervisor Name\\
+         Thesis: \textit{Title of Your Doctoral Thesis}}
+
+\cventry{2020 -- 2022}
+        {Master of [Science/Arts/Philosophy] in [Field]}
+        {University Name}
+        {City, Country}
+        {GPA: 3.9/4.0 \quad Thesis: \textit{Title of Your Master's Thesis}}
+
+\cventry{2016 -- 2020}
+        {Bachelor of [Science/Arts/Engineering] in [Field] \emph{(First Class Honours)}}
+        {University Name}
+        {City, Country}
+        {GPA: 3.85/4.0}
+
+%% ── Academic / Work Experience ──────────────────────────────
+\cvsection{Academic \& Research Experience}
+
+\cventry{2022 -- Present}
+        {Graduate Research Assistant}
+        {Lab / Research Group Name, HKU}
+        {Hong Kong}
+        {\begin{itemize}[leftmargin=*, nosep, topsep=2pt, itemsep=1pt]
+           \item[\textcolor{hkugreen}{$\bullet$}]
+             Developed [method/model/system] achieving [result/metric].
+           \item[\textcolor{hkugreen}{$\bullet$}]
+             Collaborated with [lab/team] on [project]; led [specific sub-task].
+           \item[\textcolor{hkugreen}{$\bullet$}]
+             Mentored X undergraduate and Y master's students.
+         \end{itemize}}
+
+\cventry{Summer 2023}
+        {Research Intern}
+        {Company / Institution Name}
+        {City, Country}
+        {\begin{itemize}[leftmargin=*, nosep, topsep=2pt, itemsep=1pt]
+           \item[\textcolor{hkugreen}{$\bullet$}]
+             Designed and implemented [feature/algorithm/pipeline].
+           \item[\textcolor{hkugreen}{$\bullet$}]
+             Delivered [outcome] within [timeframe].
+         \end{itemize}}
+
+%% ── Publications ────────────────────────────────────────────
+\cvsection{Selected Publications}
+{\small\color{hkugray}\textit{* corresponding author \quad $\dagger$ equal contribution}}
+\vspace{4pt}
+
+\cvsubsection{Journal Articles}\vspace{4pt}
+
+\pubentry{Your Name, Co-Author A, Co-Author B}
+         {Title of Your Journal Paper}
+         {Journal Name, vol.~XX, no.~Y, pp.~1--12, 2024}
+         {2024}
+         {https://doi.org/10.xxxx/xxxxxx}
+
+\pubentry{Your Name*, Co-Author C}
+         {Another Journal Paper Title}
+         {Another Journal, vol.~15, no.~3, 2023}
+         {2023}
+         {https://doi.org/10.xxxx/yyyyyy}
+
+\vspace{4pt}
+\cvsubsection{Conference Papers}\vspace{4pt}
+
+\pubentry{Your Name, Co-Author D, Co-Author E}
+         {Conference Paper Title}
+         {Proceedings of Conference Name (Venue), City, Country}
+         {2024}
+         {https://arxiv.org/abs/xxxx.xxxxx}
+
+\pubentry{Co-Author F$\dagger$, Your Name$\dagger$, Co-Author G}
+         {Another Conference Paper}
+         {Proceedings of Another Conference, City}
+         {2023}
+         {}
+
+%% ── Teaching ────────────────────────────────────────────────
+\cvsection{Teaching Experience}
+
+\cventry{Sem~2, 2024}
+        {Teaching Assistant — COMP XXXX: Course Name}
+        {Department of [Dept], HKU}
+        {Hong Kong}
+        {Delivered tutorials, designed assignments, graded \textasciitilde100 students.}
+
+\cventry{Sem~1, 2023}
+        {Guest Lecturer — XXXX XXXX: Another Course}
+        {University Name}
+        {City}
+        {Delivered two 90-minute lectures on [topic].}
+
+%% ── Grants & Awards ─────────────────────────────────────────
+\cvsection{Grants, Awards \& Fellowships}
+
+\awardentry{2024}{[Award / Fellowship Name] — [Awarding Body]}{HK\$XX,000}
+\awardentry{2023}{Best Paper Award — Conference Name}{---}
+\awardentry{2022}{HKU Presidential PhD Scholarship}{HK\$XX,000 p.a.}
+\awardentry{2020}{Outstanding Graduate Award — University Name}{---}
+
+%% ── Professional Service ────────────────────────────────────
+\cvsection{Professional Service}
+
+\cvsubsection{Reviewing}\vspace{4pt}
+
+\noindent{\small
+Reviewer for \textit{Journal A}, \textit{Journal B};
+Programme Committee member / reviewer for \textit{Conference A}, \textit{Conference B} (2023--2025).
+}
+
+\vspace{6pt}
+\cvsubsection{Organising}\vspace{4pt}
+
+\cventry{2024}
+        {Workshop Organiser — Workshop Name @ Conference}
+        {}
+        {}
+        {}
+
+%% ── Skills ──────────────────────────────────────────────────
+\cvsection{Technical Skills}
+
+\skillrow{Programming}{Python, C++, Java, R, MATLAB, Bash}
+\skillrow{Frameworks}{PyTorch, TensorFlow, JAX, scikit-learn, Hugging Face, LangChain}
+\skillrow{Tools \& Platforms}{Git, Docker, Kubernetes, SLURM, AWS, GCP}
+\skillrow{Databases}{PostgreSQL, MongoDB, Neo4j}
+\skillrow{Typesetting}{\LaTeX, Markdown, Pandoc}
+
+%% ── Languages ───────────────────────────────────────────────
+\cvsection{Languages}
+
+\noindent{\small
+\textbf{Cantonese} (native)\quad
+\textbf{Mandarin} (fluent)\quad
+\textbf{English} (professional fluency, IELTS~8.0)\quad
+\textbf{Japanese} (basic)
+}
+
+%% ── References ──────────────────────────────────────────────
+\cvsection{References}
+
+\noindent
+\begin{tabularx}{\linewidth}{@{} X X @{}}
+  \begin{minipage}[t]{\linewidth}
+    \textbf{Prof.\ Reference One}\\
+    {\small Professor of [Field]\\
+     Department of [Dept], The University of Hong Kong\\
+     \href{mailto:ref1@hku.hk}{ref1@hku.hk}}
+  \end{minipage}
+  &
+  \begin{minipage}[t]{\linewidth}
+    \textbf{Prof.\ Reference Two}\\
+    {\small Associate Professor of [Field]\\
+     Department of [Dept], University Name\\
+     \href{mailto:ref2@university.edu}{ref2@university.edu}}
+  \end{minipage}
+\end{tabularx}
+
+\vspace{10pt}
+\noindent{\small\color{hkugray}\textit{Additional references available upon request.}}
+
+\end{document}
